@@ -1,0 +1,88 @@
+---
+title: "Programming in Base R"
+format: html
+editor: visual
+---
+
+## Task 1
+
+```{r}
+# all the blood pressure values
+pre <- c(120, 151, 125, 126, 115, 132, 132, 129, 134, 139, 
+         127, 122, 127, 135, 133, 128, 147, 138, 140, 132)
+
+post <- c(127, 145, 135, 122, 115, 122, 123, 126, 126, 129, 
+          132, 146, 120, 114, 121, 120, 128, 120, 133, 115)
+
+# Naming subjects
+names(pre) <- paste("Subject", 1:20, sep="_")
+names(post) <- paste("Subject", 1:20, sep="_")
+
+# Difference
+diff <- pre - post
+
+# Average decrease
+mean(diff)
+
+# Which patients had positive change
+which(diff > 0)
+
+# Subset only positive changes
+diff[diff > 0]
+
+# Average decrease for only positive changes
+mean(diff[diff > 0])
+
+```
+
+## Task 2
+
+```{r}
+bp_df <- data.frame(
+  patient = paste("Subject", 1:20, sep="_"),
+  pre_bp = pre,
+  post_bp = post,
+  diff_bp = diff
+)
+
+# Rows with negative diff_bp
+bp_df[bp_df$diff_bp < 0, ]
+
+# New column: TRUE if post_bp < 120
+bp_df$post_low <- bp_df$post_bp < 120
+
+# Print
+knitr::kable(bp_df)
+
+
+```
+
+## Task 3
+
+```{r}
+# Placebo data
+pre_p <- c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130)
+post_p <- c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
+
+placebo_df <- data.frame(
+  patient = paste("Subject", 1:10, sep="_"),
+  pre_bp = pre_p,
+  post_bp = post_p,
+  diff_bp = pre_p - post_p,
+  post_low = post_p < 120
+)
+
+# List with both experiments
+all_data <- list(
+  treatment = bp_df,
+  placebo = placebo_df
+)
+
+# Access first element (3 ways)
+all_data[[1]]
+all_data$treatment
+all_data[["treatment"]]
+
+# Access pre_bp column of placebo
+all_data$placebo$pre_bp
+```
